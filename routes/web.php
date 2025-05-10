@@ -11,6 +11,10 @@ Route::get('/', function () {
     return view('nurse');
 });
 
+Route::get('/report', function () {
+    return view('report');
+});
+
 // ruangan 1
 Route::get('/infus/{ruang}/{bed}', [NurseController::class, 'infus']);
 Route::get('/perawat/{ruang}/{bed}', [NurseController::class, 'perawat']);

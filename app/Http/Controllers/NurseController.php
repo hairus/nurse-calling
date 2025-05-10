@@ -12,8 +12,8 @@ class NurseController extends Controller
     {
         // event(new PackageSent('infus', $ruang, $bed)); // Tanpa Queue, langsung jalankan
         tx_rx::create([
-            "kamar" => 1,
-            "bed" => 1,
+            "ruang" => $ruang,
+            "bed" => $bed,
             "pesan" => "infus"
         ]);
 
@@ -24,16 +24,31 @@ class NurseController extends Controller
     public function perawat($ruang, $bed)
     {
         // event(new PackageSent('infus', $ruang, $bed)); // Tanpa Queue, langsung jalankan
+        tx_rx::create([
+            "ruang" => $ruang,
+            "bed" => $bed,
+            "pesan" => "perawat"
+        ]);
         PackageSent::dispatch('perawat', $ruang, $bed);
     }
 
     public function emergency($ruang)
     {
+        tx_rx::create([
+            "ruang" => $ruang,
+            "bed" => 0,
+            "pesan" => "emergency"
+        ]);
         PackageSent::dispatch('emergency', $ruang, 0);
     }
 
     public function cancel($ruang)
     {
+        tx_rx::create([
+            "ruang" => $ruang,
+            "bed" => 0,
+            "pesan" => "cancel"
+        ]);
         PackageSent::dispatch('cancel', $ruang, 0);
     }
 
