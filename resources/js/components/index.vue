@@ -11,8 +11,9 @@
 				class="bg-white rounded-lg shadow-lg p-4">
 				<div class="text-center mb-4">
 					<h1 class="font-bold text-xl text-gray-800">
-						Ruangan Mawar {{ roomIndex + 1 }}
+						Ruang KRIS
 					</h1>
+                    <p class="text-xl font-bold">{{ roomIndex + 1 }}</p>
 				</div>
 
 				<!-- Bed di setiap ruangan -->
