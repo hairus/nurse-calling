@@ -3,7 +3,7 @@
 <template>
     <div>
         <main-page />
-        <report-page />
+        <!-- <report-page /> -->
     </div>
 </template>
 <script setup>

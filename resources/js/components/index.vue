@@ -2,6 +2,23 @@
 
 <template>
 	<div class="min-h-screen bg-gray-100 p-6">
+        <div class="mb-6">
+			<h2 class="font-bold text-xl">Laporan Harian</h2>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+				<div class="bg-white p-4 rounded-lg shadow-md">
+					<h3 class="font-semibold">Total Tindakan Infus 10</h3>
+					<p> {{  datas.infusD }}</p>
+				</div>
+				<div class="bg-white p-4 rounded-lg shadow-md">
+					<h3 class="font-semibold">Total Tindakan Perawat</h3>
+					<p> {{  datas.perawatD }}</p>
+				</div>
+				<div class="bg-white p-4 rounded-lg shadow-md">
+					<h3 class="font-semibold">Total Tindakan</h3>
+					<p> {{  datas.cancel }}</p>
+				</div>
+			</div>
+		</div>
 		<!-- Grid untuk Menampilkan Ruangan dan Bed -->
 		<div
 			class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-6">
@@ -10,14 +27,12 @@
 				:key="roomIndex"
 				class="bg-white rounded-lg shadow-lg p-4">
 				<div class="text-center mb-4">
-					<h1 class="font-bold text-xl text-gray-800">
-						Ruang KRIS
-					</h1>
-                    <p class="text-xl font-bold">{{ roomIndex + 1 }}</p>
+					<h1 class="font-bold text-xl text-gray-800">Ruang KRIS</h1>
+					<p class="text-xl font-bold">{{ roomIndex + 1 }}</p>
 				</div>
 
 				<!-- Bed di setiap ruangan -->
-				<div class="grid grid-cols-1 gap-4">
+				<div class="grid grid-cols-1 gap-4 justify-center">
 					<div
 						v-for="(bed, bedIndex) in room.beds"
 						:key="bedIndex"
@@ -31,16 +46,14 @@
 						]">
 						<div
 							class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-							<p class="text-white font-bold">Bed {{ bedIndex + 1 }}</p>
+							<p class="text-white font-bold">Bed {{ bedIndex === 0 ? 'A' : 'B' }}</p>
 						</div>
 						<div class="mt-2 flex justify-around gap-4">
 							<button
-								@click="handleAction('infus', roomIndex, bedIndex)"
 								class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded-lg">
 								Infus
 							</button>
 							<button
-								@click="handleAction('perawat', roomIndex, bedIndex)"
 								class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded-lg">
 								Perawat
 							</button>
@@ -63,12 +76,16 @@
 				</div> -->
 			</div>
 		</div>
+
 	</div>
 </template>
 <script setup>
 	import { onMounted, ref, watch } from 'vue';
+	import axios from 'axios';
 
 	const peringatan = ref('');
+
+	const datas = ref([]);
 
 	watch(peringatan, (newPesan, oldPesan) => {
 		// console.log(`Pesan berubah dari: ${oldPesan} menjadi: ${newPesan.status}`);
@@ -87,86 +104,86 @@
 	const rooms = ref([
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 		{
 			beds: [
-				{ status: '', name: 'Bed 1', isBlinking: false, sound: null },
-				{ status: '', name: 'Bed 2', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed A', isBlinking: false, sound: null },
+				{ status: '', name: 'Bed B', isBlinking: false, sound: null },
 			],
 		},
 	]);
@@ -181,6 +198,7 @@
 			peringatan.value = event;
 			// console.log(event);
 		});
+        // getDatas()
 	});
 
 	// Fungsi untuk menangani aksi Infus dan Perawat
@@ -208,6 +226,7 @@
 		stopAllSounds(); // Hentikan semua suara yang sedang diputar
 		startBlinking(roomIndex, null); // Start blinking for the whole room
 		playEmergency(); // Mainkan suara emergency
+		// getDatas();
 	}
 
 	// Fungsi untuk Cancel untuk setiap ruangan
@@ -215,6 +234,7 @@
 		// console.log(`Cancel for Room ${roomIndex + 1}`);
 		stopAllSounds(); // Hentikan semua suara yang sedang diputar
 		stopBlinking(roomIndex); // Stop blinking for the room
+		// getDatas();
 	}
 
 	// Fungsi untuk berhenti berkedip pada seluruh bed dalam ruangan
@@ -259,6 +279,7 @@
 	// Function to play emergency sound
 	function playEmergency() {
 		if (!emergencySound.value || emergencySound.value.paused) {
+			// getDatas();
 			emergencySound.value = new Audio('../../../audio/e1.mp3');
 			emergencySound.value.loop = true;
 			emergencySound.value.play().catch((err) => {
@@ -269,6 +290,7 @@
 
 	// Function to play perawat sound
 	function playPerawat(roomIndex, bedIndex) {
+		// getDatas();
 		doorSound.value = new Audio('../../../audio/bell.mp3');
 		doorSound.value.play();
 		setTimeout(() => {
@@ -282,8 +304,15 @@
 		}, 1000);
 	}
 
+	async function getDatas() {
+		await axios.get('/counting').then((res) => {
+			datas.value = res.data;
+		});
+	}
+
 	// Function to play infus sound
 	function playInfus(roomIndex, bedIndex) {
+		// getDatas();
 		doorSound.value = new Audio('../../../audio/bell.mp3');
 		doorSound.value.play();
 		setTimeout(() => {

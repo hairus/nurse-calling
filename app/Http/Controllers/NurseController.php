@@ -52,5 +52,24 @@ class NurseController extends Controller
         PackageSent::dispatch('cancel', $ruang, 0);
     }
 
+    public function counting()
+    {
+
+        $count = tx_rx::select('id')->count();
+
+        $infusD = tx_rx::select('pesan')->where('pesan', 'infus')->whereDay('created_at', date('d'))->count();
+
+        $perawatD = tx_rx::select('pesan')->where('pesan', 'perawat')->whereDay('created_at', date('d'))->count();
+
+        $cancelD = tx_rx::select('pesan')->where('pesan', 'cancel')->whereDay('created_at', date('d'))->count();
+
+        return response()->json([
+            "countAll" => $count,
+            "infusD" => $infusD,
+            "perawatD" => $perawatD,
+            "cancel" => $cancelD
+        ]);
+
+    }
 
 }
