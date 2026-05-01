@@ -4,9 +4,9 @@
 	<div class="min-h-screen bg-gray-100 p-6">
         <div class="mb-6">
 			<h2 class="font-bold text-xl">Laporan Harian</h2>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+			<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
 				<div class="bg-white p-4 rounded-lg shadow-md">
-					<h3 class="font-semibold">Total Tindakan Infus 10</h3>
+					<h3 class="font-semibold">Total Tindakan Infus</h3>
 					<p> {{  datas.infusD }}</p>
 				</div>
 				<div class="bg-white p-4 rounded-lg shadow-md">
@@ -14,7 +14,11 @@
 					<p> {{  datas.perawatD }}</p>
 				</div>
 				<div class="bg-white p-4 rounded-lg shadow-md">
-					<h3 class="font-semibold">Total Tindakan</h3>
+					<h3 class="font-semibold">Total Emergency</h3>
+					<p> {{  datas.emergencyD }}</p>
+				</div>
+				<div class="bg-white p-4 rounded-lg shadow-md">
+					<h3 class="font-semibold">Total Cancel</h3>
 					<p> {{  datas.cancel }}</p>
 				</div>
 			</div>
@@ -85,7 +89,12 @@
 
 	const peringatan = ref('');
 
-	const datas = ref([]);
+	const datas = ref({
+		infusD: 0,
+		perawatD: 0,
+		emergencyD: 0,
+		cancel: 0,
+	});
 
 	watch(peringatan, (newPesan, oldPesan) => {
 		// console.log(`Pesan berubah dari: ${oldPesan} menjadi: ${newPesan.status}`);
@@ -198,43 +207,64 @@
 			peringatan.value = event;
 			// console.log(event);
 		});
-        // getDatas()
+		getDatas();
 	});
 
 	// Fungsi untuk menangani aksi Infus dan Perawat
 	function handleAction(action, roomIndex, bedIndex) {
 		// console.log(`${action} for Room ${roomIndex + 1}, Bed ${bedIndex + 1}`);
+		const room = rooms.value[roomIndex];
+		const bed = room?.beds[bedIndex];
+
+		if (!bed) {
+			return;
+		}
 
 		// Hentikan semua suara yang sedang diputar
 		stopAllSounds();
 
 		// Update status bed berdasarkan aksi yang dilakukan
 		if (action === 'infus') {
-			rooms.value[roomIndex].beds[bedIndex].status = 'infus'; // Ganti warna bed menjadi hijau (infus)
+			bed.status = 'infus'; // Ganti warna bed menjadi hijau (infus)
 			startBlinking(roomIndex, bedIndex); // Start blinking when infus
 			playInfus(roomIndex, bedIndex);
+			getDatas();
 		} else if (action === 'perawat') {
-			rooms.value[roomIndex].beds[bedIndex].status = 'perawat'; // Ganti warna bed menjadi orange (perawat)
+			bed.status = 'perawat'; // Ganti warna bed menjadi orange (perawat)
 			startBlinking(roomIndex, bedIndex); // Start blinking when infus
 			playPerawat(roomIndex, bedIndex);
+			getDatas();
 		}
 	}
 
 	// Fungsi untuk Emergency untuk setiap ruangan
 	function handleEmergency(roomIndex) {
 		// console.log(`Emergency for Room ${roomIndex + 1}`);
+		const room = rooms.value[roomIndex];
+
+		if (!room) {
+			return;
+		}
+
 		stopAllSounds(); // Hentikan semua suara yang sedang diputar
+		room.beds.forEach((bed) => {
+			bed.status = 'emergency';
+		});
 		startBlinking(roomIndex, null); // Start blinking for the whole room
 		playEmergency(); // Mainkan suara emergency
-		// getDatas();
+		getDatas();
 	}
 
 	// Fungsi untuk Cancel untuk setiap ruangan
 	function handleCancel(roomIndex) {
 		// console.log(`Cancel for Room ${roomIndex + 1}`);
+		if (!rooms.value[roomIndex]) {
+			return;
+		}
+
 		stopAllSounds(); // Hentikan semua suara yang sedang diputar
 		stopBlinking(roomIndex); // Stop blinking for the room
-		// getDatas();
+		getDatas();
 	}
 
 	// Fungsi untuk berhenti berkedip pada seluruh bed dalam ruangan
@@ -271,8 +301,8 @@
 			infusSound.value.currentTime = 0;
 		}
 		if (doorSound.value) {
-			infusSound.value.pause();
-			infusSound.value.currentTime = 0;
+			doorSound.value.pause();
+			doorSound.value.currentTime = 0;
 		}
 	}
 

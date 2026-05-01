@@ -3,9 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\PackageSent;
-use App\Events\PackgeListener;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 class PackageListener
@@ -23,7 +20,7 @@ class PackageListener
      */
     public function handle(PackageSent $event): void
     {
-        Log::info("Event Package Sent: {$event->status} for room {$event->room}, bed {$event->bed}");
+        Log::info("Event Package Sent: {$event->status} for room {$event->ruang}, bed {$event->bed}");
 
     }
 }

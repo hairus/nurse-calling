@@ -19,6 +19,8 @@ class NurseController extends Controller
 
         PackageSent::dispatch('infus', $ruang, $bed);
 
+        return response()->json(['status' => 'ok']);
+
     }
 
     public function perawat($ruang, $bed)
@@ -30,6 +32,8 @@ class NurseController extends Controller
             "pesan" => "perawat"
         ]);
         PackageSent::dispatch('perawat', $ruang, $bed);
+
+        return response()->json(['status' => 'ok']);
     }
 
     public function emergency($ruang)
@@ -40,6 +44,8 @@ class NurseController extends Controller
             "pesan" => "emergency"
         ]);
         PackageSent::dispatch('emergency', $ruang, 0);
+
+        return response()->json(['status' => 'ok']);
     }
 
     public function cancel($ruang)
@@ -50,6 +56,8 @@ class NurseController extends Controller
             "pesan" => "cancel"
         ]);
         PackageSent::dispatch('cancel', $ruang, 0);
+
+        return response()->json(['status' => 'ok']);
     }
 
     public function counting()
@@ -57,17 +65,20 @@ class NurseController extends Controller
 
         $count = tx_rx::select('id')->count();
 
-        $infusD = tx_rx::select('pesan')->where('pesan', 'infus')->whereDay('created_at', date('d'))->count();
+        $infusD = tx_rx::select('pesan')->where('pesan', 'infus')->whereDate('created_at', now()->toDateString())->count();
 
-        $perawatD = tx_rx::select('pesan')->where('pesan', 'perawat')->whereDay('created_at', date('d'))->count();
+        $perawatD = tx_rx::select('pesan')->where('pesan', 'perawat')->whereDate('created_at', now()->toDateString())->count();
 
-        $cancelD = tx_rx::select('pesan')->where('pesan', 'cancel')->whereDay('created_at', date('d'))->count();
+        $cancelD = tx_rx::select('pesan')->where('pesan', 'cancel')->whereDate('created_at', now()->toDateString())->count();
+
+        $emergencyD = tx_rx::select('pesan')->where('pesan', 'emergency')->whereDate('created_at', now()->toDateString())->count();
 
         return response()->json([
             "countAll" => $count,
             "infusD" => $infusD,
             "perawatD" => $perawatD,
-            "cancel" => $cancelD
+            "cancel" => $cancelD,
+            "emergencyD" => $emergencyD,
         ]);
 
     }
